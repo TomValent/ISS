@@ -20,33 +20,36 @@ def frames(data: np.ndarray, data_size):
     return np.array(frm)
 
 def graph(result, frame, Fs, length):
-    for i in range (60, 68):
-        t = np.arange(1024)                             # build in DFT
-        sp = frame[i]
-        freq = length / len(frame[i])/2
-        plt.figure(figsize=(18,8))
-        plt.title("Numpy DFT")
-        plt.xlabel = ("f[HZ]")
-        plt.ylabel = ("Amplituda[-]")
-        plt.plot(freq * Fs, abs(sp))
-        plt.tight_layout()
-        plt.show()
+    t = np.arange(1024/2)                             # build in DFT
+    sp = np.fft.fft(frame[0])
+    freq = np.fft.fftfreq(t.shape[-1])
+    plt.figure(figsize=(18,8))
+    plt.title("Numpy DFT")
+    plt.xlabel = ("f[HZ]")
+    plt.ylabel = ("Amplituda[-]")
+    sp = np.split(abs(sp), 2)[0]
+    plt.plot(freq * Fs, abs(sp))
+    plt.show()
 
     t = np.arange(1024)                             # custom DFT
-    sp = result[50]
+    sp = result[0]
     freq = np.fft.fftfreq(t.shape[-1])
     plt.figure(figsize=(18,8))
     plt.title("Custom DFT")
     plt.xlabel = ("f[HZ]")
     plt.ylabel = ("Amplituda[-]")
-    plt.plot(freq * Fs, abs(sp))
+    plt.plot(t, abs(sp))
     plt.tight_layout()
+    plt.show()
 
 def graph2(frame, Fs, length):
-    for i in range(len(frames)):
-        frame_duration = length / (len(frames) / 2)
+    for i in range(5, 12):
+        frame_duration = length / (len(frame) / 2)
         new_t = np.arange(0, frame_duration, frame_duration / 1024)
 
+        plt.figure(figsize=(16, 9))
+        plt.plot(new_t, frame[i])
+        plt.show()
         print("frame number: ", i)
 
 def load(name):
@@ -66,4 +69,4 @@ def load(name):
 
 if __name__ == '__main__':
     result, frame, Fs, y, length = load('xvalen27.wav')
-
+    #graph(result, frame, Fs, length)
