@@ -19,38 +19,39 @@ def frames(data: np.ndarray, data_size):
     frm[-1] = np.pad(frm[-1], (0, frame_size - frm[-1].shape[0]), "constant")
     return np.array(frm)
 
-def graph(result, frame, Fs, length):
-    t = np.arange(1024/2)                             # build in DFT
-    sp = np.fft.fft(frame[0])
+def graph2(result, frame, Fs, length):
+    t = np.arange(1024)                           # build in DFT
+    sp = np.fft.fft(frame[7])
     freq = np.fft.fftfreq(t.shape[-1])
     plt.figure(figsize=(18,8))
     plt.title("Numpy DFT")
     plt.xlabel = ("f[HZ]")
     plt.ylabel = ("Amplituda[-]")
     sp = np.split(abs(sp), 2)[0]
+    freq = np.split(abs(freq), 2)[0]
     plt.plot(freq * Fs, abs(sp))
     plt.show()
 
     t = np.arange(1024)                             # custom DFT
-    sp = result[0]
     freq = np.fft.fftfreq(t.shape[-1])
+    sp = DFT(frame[7])
     plt.figure(figsize=(18,8))
     plt.title("Custom DFT")
     plt.xlabel = ("f[HZ]")
     plt.ylabel = ("Amplituda[-]")
-    plt.plot(t, abs(sp))
+    sp = np.split(abs(sp), 2)[0]
+    freq = np.split(abs(freq), 2)[0]
+    plt.plot(freq * Fs, abs(sp))
     plt.tight_layout()
     plt.show()
 
-def graph2(frame, Fs, length):
-    for i in range(5, 12):
-        frame_duration = length / (len(frame) / 2)
-        new_t = np.arange(0, frame_duration, frame_duration / 1024)
-
-        plt.figure(figsize=(16, 9))
-        plt.plot(new_t, frame[i])
-        plt.show()
-        print("frame number: ", i)
+def graph1(frame, length):
+    frame_duration = length / (len(frame) / 2)
+    new_t = np.arange(0, frame_duration, frame_duration / 1024)
+    plt.figure(figsize=(16, 9))
+    plt.title("Znely ramec (index 7)")
+    plt.plot(new_t, frame[7])
+    plt.show()
 
 def load(name):
     length = WAVE(name).info.length                 # dlzka signalu
@@ -62,11 +63,11 @@ def load(name):
     print(y.min(), y.max())
 
     frame = frames(y, Fs * length)                  # rozdelenie na frames
-    graph2(frame, Fs, length)
+    graph1(frame, length)
 
     return DFT(frame), frame, Fs, y, length
 
 
 if __name__ == '__main__':
     result, frame, Fs, y, length = load('xvalen27.wav')
-    #graph(result, frame, Fs, length)
+    graph2(result, frame, Fs, length)
