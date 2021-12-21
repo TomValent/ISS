@@ -3,6 +3,7 @@ from scipy import signal
 from mutagen.wave import WAVE
 import numpy as np
 import matplotlib.pyplot as plt
+import wavio
 
 
 def DFT(x):
@@ -65,6 +66,28 @@ def spectrogram(Fs, y):
     plt.title("Spektogram")
     plt.show()
 
+def bad_freq():
+    f1 = 750
+    f2 = 1500
+    f3 = 2250
+    f4 = 3000
+    if ((f1 * 2 == f2) and (f1 * 3 == f3) and (f1 * 4 == f4)):
+        print("Bad frequences are harmoniously related")
+    return f1, f2, f3, f4
+
+def new_sound(length, Fs, f1, f2, f3, f4):
+    for n in np.arange(length * Fs):
+        print(n)
+    time = np.linspace(0, int(length), int(length * Fs), endpoint=False)
+
+    out_cos1 = np.cos(2 * np.pi * f1 * time)
+    out_cos2 = np.cos(2 * np.pi * f2 * time)
+    out_cos3 = np.cos(2 * np.pi * f3 * time)
+    out_cos4 = np.cos(2 * np.pi * f4 * time)
+
+    output_total = out_cos1 + out_cos2 + out_cos3 + out_cos4
+    wavio.write("./audio/4cos.wav", output_total, Fs, sampwidth=3)
+
 def load(name):
     length = WAVE(name).info.length                 # dlzka signalu
     print(f'Total Duration: {format(length)}s')
@@ -82,4 +105,6 @@ if __name__ == '__main__':
     frame, Fs, y, length = load('xvalen27.wav')
     #graph1(frame, length)                           # graf zneleho frame
     #graph2(frame, Fs)                               # graf build in a custom DFT
-    spectrogram(Fs, y)
+    #spectrogram(Fs, y)                              # f1 - f4 = 750*n                  #dont forget to uncomment these 3
+    f1, f2, f3, f4 = bad_freq()
+    new_sound(length, Fs, f1, f2, f3, f4)
