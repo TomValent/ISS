@@ -76,8 +76,7 @@ def bad_freq():
     return f1, f2, f3, f4
 
 def new_sound(length, Fs, f1, f2, f3, f4):
-    for n in np.arange(length * Fs):
-        print(n)
+
     time = np.linspace(0, int(length), int(length * Fs), endpoint=False)
 
     out_cos1 = np.cos(2 * np.pi * f1 * time)
@@ -88,11 +87,24 @@ def new_sound(length, Fs, f1, f2, f3, f4):
     output_total = out_cos1 + out_cos2 + out_cos3 + out_cos4
     wavio.write("./audio/4cos.wav", output_total, Fs, sampwidth=3)
 
+#---------------------------------------------------------------------------
+#                       Spektrogram zleho zvuku
+
+
+    f, t, Sxx = signal.spectrogram(output_total, Fs, nperseg=1024, noverlap=512)
+    plt.pcolormesh(t, f, 10 * np.log10(Sxx), shading="gouraud", cmap="jet")
+    plt.colorbar()
+    plt.xlabel("Čas[t]")
+    plt.ylabel("Frekvencia[Hz]")
+    plt.title("Spektogram ruchu")
+    plt.show()
+
+
 def load(name):
     length = WAVE(name).info.length                 # dlzka signalu
     print(f'Total Duration: {format(length)}s')
 
-    Fs, y = wavfile.read('xvalen27.wav')            # nacitanie
+    Fs, y = wavfile.read(name)                      # nacitanie
     y = y - np.mean(y)                              # ustrednenie
     y /= max(abs(y))                                # normalizacia
     print(y.min(), y.max())
@@ -102,9 +114,9 @@ def load(name):
 
 
 if __name__ == '__main__':
-    frame, Fs, y, length = load('xvalen27.wav')
-    #graph1(frame, length)                           # graf zneleho frame
-    #graph2(frame, Fs)                               # graf build in a custom DFT
-    #spectrogram(Fs, y)                              # f1 - f4 = 750*n                  #dont forget to uncomment these 3
+    frame, Fs, y, length = load('./audio/xvalen27.wav')
+    graph1(frame, length)                           # graf zneleho frame
+    graph2(frame, Fs)                               # graf build in a custom DFT
+    spectrogram(Fs, y)                              # f1 - f4 = 750*n                  #dont forget to uncomment these 3
     f1, f2, f3, f4 = bad_freq()
     new_sound(length, Fs, f1, f2, f3, f4)
