@@ -117,6 +117,6 @@ if __name__ == '__main__':
     frame, Fs, y, length = load('./audio/xvalen27.wav')
     graph1(frame, length)                           # graf zneleho frame
     graph2(frame, Fs)                               # graf build in a custom DFT
-    spectrogram(Fs, y)                              # f1 - f4 = 750*n                  #dont forget to uncomment these 3
+    spectrogram(Fs, y)                              # f1 - f4 = 750*n
     f1, f2, f3, f4 = bad_freq()
     new_sound(length, Fs, f1, f2, f3, f4)
