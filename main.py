@@ -19,7 +19,15 @@ def frames(data: np.ndarray, data_size):
     frm[-1] = np.pad(frm[-1], (0, frame_size - frm[-1].shape[0]), "constant")
     return np.array(frm)
 
-def graph2(result, frame, Fs, length):
+def graph1(frame, length):
+    frame_duration = length / (len(frame) / 2)
+    new_t = np.arange(0, frame_duration, frame_duration / 1024)
+    plt.figure(figsize=(16, 9))
+    plt.title("Znely ramec (index 7)")
+    plt.plot(new_t, frame[7])
+    plt.show()
+
+def graph2(frame, Fs):
     t = np.arange(1024)                           # build in DFT
     sp = np.fft.fft(frame[7])
     freq = np.fft.fftfreq(t.shape[-1])
@@ -33,8 +41,8 @@ def graph2(result, frame, Fs, length):
     plt.show()
 
     t = np.arange(1024)                             # custom DFT
-    freq = np.fft.fftfreq(t.shape[-1])
-    sp = DFT(frame[7])
+    freq = np.fft.fftfreq(t.shape[-1])              # freq by mala byt rovnaka ako pri build in verzii,
+    sp = DFT(frame[7])                              # snad je to legalne robit takto
     plt.figure(figsize=(18,8))
     plt.title("Custom DFT")
     plt.xlabel = ("f[HZ]")
@@ -43,14 +51,6 @@ def graph2(result, frame, Fs, length):
     freq = np.split(abs(freq), 2)[0]
     plt.plot(freq * Fs, abs(sp))
     plt.tight_layout()
-    plt.show()
-
-def graph1(frame, length):
-    frame_duration = length / (len(frame) / 2)
-    new_t = np.arange(0, frame_duration, frame_duration / 1024)
-    plt.figure(figsize=(16, 9))
-    plt.title("Znely ramec (index 7)")
-    plt.plot(new_t, frame[7])
     plt.show()
 
 def load(name):
@@ -63,11 +63,11 @@ def load(name):
     print(y.min(), y.max())
 
     frame = frames(y, Fs * length)                  # rozdelenie na frames
-    graph1(frame, length)
 
-    return DFT(frame), frame, Fs, y, length
+    return frame, Fs, y, length
 
 
 if __name__ == '__main__':
-    result, frame, Fs, y, length = load('xvalen27.wav')
-    graph2(result, frame, Fs, length)
+    frame, Fs, y, length = load('xvalen27.wav')
+    graph1(frame, length)                           # graf zneleho frame
+    graph2(frame, Fs)                               # graf build in a custom DFT
