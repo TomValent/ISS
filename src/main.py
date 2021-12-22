@@ -85,7 +85,7 @@ def new_sound(length, Fs, f1, f2, f3, f4):
     out_cos4 = np.cos(2 * np.pi * f4 * time)
 
     output_total = out_cos1 + out_cos2 + out_cos3 + out_cos4
-    wavio.write("./audio/4cos.wav", output_total, Fs, sampwidth=3)
+    wavio.write("../audio/4cos.wav", output_total, Fs, sampwidth=3)
 
 #---------------------------------------------------------------------------
 #                       Spektrogram zleho zvuku
@@ -114,7 +114,7 @@ def load(name):
 
 
 if __name__ == '__main__':
-    frame, Fs, y, length = load('./audio/xvalen27.wav')
+    frame, Fs, y, length = load("../audio/xvalen27.wav")
     graph1(frame, length)                           # graf zneleho frame
     graph2(frame, Fs)                               # graf build in a custom DFT
     spectrogram(Fs, y)                              # f1 - f4 = 750*n
