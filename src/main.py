@@ -85,7 +85,7 @@ def new_sound(length, Fs, f1, f2, f3, f4):
     out_cos4 = np.cos(2 * np.pi * f4 * time)
 
     output_total = out_cos1 + out_cos2 + out_cos3 + out_cos4
-    wavio.write("../audio/4cos.wav", output_total, Fs, sampwidth=3)
+    wavio.write("../audio/4cos.wav", output_total.astype(np.int16), Fs, sampwidth=3)
 
 #---------------------------------------------------------------------------
 #                       Spektrogram zleho zvuku
